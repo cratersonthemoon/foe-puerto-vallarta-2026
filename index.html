@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>F.O.E Mexico Summer 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --teal-50: #E8F6F5; --teal-100: #B2E2DE; --teal-200: #2DB3A8;
+    --teal-400: #1A8A80; --teal-600: #0D5C56;
+    --gold-50: #FEF9EC; --gold-100: #FAEAB3; --gold-200: #F0C040;
+    --gold-400: #C49A10; --gold-600: #7A5F00;
+    --coral-50: #FEF0EE; --coral-400: #E05A42;
+    --text-primary: #0A2A2A; --text-secondary: #3D6060; --text-muted: #7A9E9E;
+    --border: rgba(13,92,86,0.12); --surface: #FFFFFF; --bg: #F4FAFA; --card-bg: #FFFFFF;
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
+
+  .tab-radio { position: absolute; opacity: 0; pointer-events: none; }
+  .nav-strip { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 2rem; display: flex; overflow-x: auto; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 12px rgba(13,92,86,0.07); }
+  .nav-label { padding: 1rem 1.1rem; font-size: 12px; font-weight: 500; color: var(--text-secondary); border-bottom: 2px solid transparent; white-space: nowrap; cursor: pointer; transition: color 0.15s, border-color 0.15s; display: block; }
+  .nav-label:hover { color: var(--teal-400); border-bottom-color: var(--teal-200); }
+  #tab-main:checked ~ * .label-main,
+  #tab-flights:checked ~ * .label-flights,
+  #tab-daily:checked ~ * .label-daily,
+  #tab-vibes:checked ~ * .label-vibes { color: var(--teal-400); border-bottom-color: var(--teal-200); }
+  .page { display: none; }
+  #tab-main:checked ~ .page-main { display: block; }
+  #tab-flights:checked ~ .page-flights { display: block; }
+  #tab-daily:checked ~ .page-daily { display: block; }
+  #tab-vibes:checked ~ .page-vibes { display: block; }
+
+  /* HERO */
+  .hero { position: relative; min-height: 480px; display: flex; flex-direction: column; justify-content: flex-end; padding: 3rem 3rem 2.75rem; overflow: hidden; background: linear-gradient(155deg, #051818 0%, #0A3030 25%, #0D5C56 60%, #1db5a8 100%); }
+  .hero-texture { position: absolute; inset: 0; background: radial-gradient(ellipse 55% 45% at 92% 8%, rgba(240,192,64,0.22) 0%, transparent 55%), radial-gradient(ellipse 40% 55% at 5% 95%, rgba(13,92,86,0.5) 0%, transparent 50%); }
+  .hero-lines { position: absolute; inset: 0; opacity: 0.035; background-image: repeating-linear-gradient(0deg, transparent, transparent 60px, rgba(255,255,255,0.6) 60px, rgba(255,255,255,0.6) 61px), repeating-linear-gradient(90deg, transparent, transparent 60px, rgba(255,255,255,0.3) 60px, rgba(255,255,255,0.3) 61px); }
+  .hero::after { content: 'FOE'; position: absolute; right: -0.05em; bottom: -0.15em; font-family: 'Playfair Display', Georgia, serif; font-size: clamp(180px,28vw,320px); font-weight: 700; font-style: italic; color: rgba(255,255,255,0.04); line-height: 1; pointer-events: none; z-index: 0; }
+  .hero-content { position: relative; z-index: 2; max-width: 780px; }
+  .hero-eyebrow { display: inline-flex; align-items: center; gap: 10px; font-size: 10px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold-200); margin-bottom: 1.25rem; }
+  .hero-eyebrow::before, .hero-eyebrow::after { content: ''; display: block; height: 1px; width: 28px; background: var(--gold-200); opacity: 0.7; }
+  .hero-title { font-family: 'Playfair Display', Georgia, serif; font-weight: 700; line-height: 0.95; color: #fff; margin-bottom: 1.25rem; }
+  .hero-title .line2 { display: block; font-size: clamp(54px,10vw,108px); font-weight: 700; font-style: italic; line-height: 0.9; }
+  .hero-title .line3 { display: block; font-size: clamp(18px,3vw,28px); font-weight: 400; letter-spacing: 0.28em; text-transform: uppercase; color: var(--gold-100); margin-top: 0.4em; }
+  .hero-countdown { display: flex; align-items: flex-start; gap: 6px; margin-bottom: 2rem; }
+  .cd-block { display: flex; flex-direction: column; align-items: center; }
+  .cd-num { font-family: 'Playfair Display', Georgia, serif; font-size: clamp(42px,7vw,80px); font-weight: 700; line-height: 1; color: #fff; letter-spacing: -0.02em; }
+  .cd-label { font-size: 9px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.45); margin-top: 4px; }
+  .cd-sep { font-family: 'Playfair Display', Georgia, serif; font-size: clamp(36px,6vw,68px); font-weight: 300; color: var(--gold-200); opacity: 0.6; line-height: 1; padding: 0 2px; margin-top: 2px; }
+  .hero-divider { width: 60px; height: 2px; background: linear-gradient(90deg, var(--gold-200), transparent); margin: 1.25rem 0; }
+  .hero-sub { font-size: 14px; color: rgba(255,255,255,0.55); font-weight: 300; margin-bottom: 1.5rem; max-width: 460px; line-height: 1.7; }
+  .hero-badges { display: flex; gap: 8px; flex-wrap: wrap; }
+  .badge { font-size: 10px; font-weight: 600; padding: 5px 14px; border-radius: 20px; border: 1px solid rgba(240,192,64,0.35); background: rgba(240,192,64,0.08); color: var(--gold-100); letter-spacing: 0.08em; text-transform: uppercase; }
+
+  /* MAIN */
+  .main { max-width: 860px; margin: 0 auto; padding: 3rem 2rem 4rem; }
+  .villa-card { background: linear-gradient(135deg, #0A2A2A 0%, #0D5C56 60%, #1A8A80 100%); border-radius: 16px; padding: 1.75rem 2rem; margin-bottom: 3rem; border: 1px solid rgba(45,179,168,0.25); }
+  .villa-tag { font-size: 10px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold-100); margin-bottom: 0.5rem; }
+  .villa-name { font-family: 'Playfair Display', Georgia, serif; font-size: 24px; font-weight: 700; color: #fff; margin-bottom: 0.25rem; }
+  .villa-sub { font-size: 13px; color: rgba(255,255,255,0.5); font-weight: 300; margin-bottom: 1.25rem; }
+  .villa-services-head { font-size: 10px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold-100); margin-bottom: 0.6rem; }
+  .villa-services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap: 6px; }
+  .villa-service-item { font-size: 12px; color: rgba(255,255,255,0.6); padding-left: 14px; position: relative; line-height: 1.5; }
+  .villa-service-item::before { content: '·'; position: absolute; left: 4px; color: var(--gold-200); }
+  .villa-note { margin-top: 1rem; padding: 10px 14px; background: rgba(240,192,64,0.08); border-radius: 8px; border: 1px solid rgba(240,192,64,0.2); font-size: 12px; color: rgba(255,255,255,0.6); line-height: 1.5; }
+  .section-block { margin-bottom: 3rem; scroll-margin-top: 52px; }
+  .section-block-header { margin-bottom: 1.5rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border); }
+  .section-block-title { font-family: 'Playfair Display', Georgia, serif; font-size: 26px; font-weight: 700; font-style: italic; color: var(--text-primary); }
+  .section-block-sub { font-size: 12px; color: var(--text-muted); margin-top: 3px; }
+  .rooms-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px,1fr)); gap: 12px; }
+  .room-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px; padding: 14px 16px; transition: border-color 0.15s, transform 0.15s; position: relative; overflow: hidden; }
+  .room-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--teal-200); border-radius: 14px 0 0 14px; }
+  .room-card:hover { border-color: rgba(45,179,168,0.45); transform: translateY(-1px); }
+  .room-num { font-size: 10px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--teal-400); margin-bottom: 3px; }
+  .room-group { font-size: 14px; font-weight: 500; color: var(--text-primary); margin-bottom: 5px; }
+  .room-members { font-size: 12px; color: var(--text-secondary); line-height: 1.6; font-weight: 300; }
+  .grocery-panel { background: var(--card-bg); border: 1px solid var(--border); border-left: 3px solid var(--teal-200); border-radius: 0 14px 14px 0; padding: 1.25rem 1.5rem; margin-bottom: 1rem; }
+  .grocery-head { font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 0.75rem; }
+  .grocery-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .grocery-list li { font-size: 13px; color: var(--text-secondary); padding-left: 16px; position: relative; line-height: 1.5; font-weight: 300; }
+  .grocery-list li::before { content: '—'; position: absolute; left: 0; color: var(--teal-200); font-size: 11px; top: 1px; }
+
+  /* SHARED */
+  .page-wrap { max-width: 860px; margin: 0 auto; padding: 3rem 2rem 4rem; }
+  .page-header { margin-bottom: 2rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border); scroll-margin-top: 52px; }
+  .page-title { font-family: 'Playfair Display', Georgia, serif; font-size: 32px; font-weight: 700; font-style: italic; color: var(--text-primary); }
+  .page-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+  /* FLIGHTS */
+  .airline-group { margin-bottom: 2.5rem; }
+  .airline-group-label { display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 1rem; }
+  .airline-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .flights-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px,1fr)); gap: 12px; }
+  .flight-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px; padding: 16px 18px; transition: border-color 0.15s; }
+  .flight-card:hover { border-color: rgba(45,179,168,0.45); }
+  .fc-route { font-size: 15px; font-weight: 600; color: var(--text-primary); margin-bottom: 8px; }
+  .fc-times { background: var(--bg); border-radius: 8px; padding: 8px 12px; margin-bottom: 8px; }
+  .fc-leg { display: flex; justify-content: space-between; margin-bottom: 3px; }
+  .fc-time { font-size: 16px; font-weight: 700; color: var(--text-primary); }
+  .fc-arr { font-size: 16px; font-weight: 700; color: var(--teal-400); }
+  .fc-detail { font-size: 11px; color: var(--text-muted); line-height: 1.4; }
+  .fc-meta { font-size: 11px; color: var(--text-muted); border-top: 1px solid var(--border); padding-top: 8px; margin-top: 4px; margin-bottom: 8px; }
+  .flight-passengers { display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px; border-top: 1px solid var(--border); padding-top: 8px; margin-top: 4px; }
+  .flight-passengers-label { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--teal-400); margin-right: 4px; }
+  .flight-passenger-name { font-size: 12px; color: var(--text-secondary); background: var(--teal-50); border: 1px solid rgba(45,179,168,0.3); border-radius: 20px; padding: 2px 9px; }
+
+  /* DAILY */
+  .daily-days { display: flex; flex-direction: column; gap: 12px; margin-bottom: 2.5rem; }
+  .daily-day { background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px; padding: 16px 18px; }
+  .daily-day-header { display: flex; align-items: center; gap: 14px; margin-bottom: 10px; }
+  .daily-day-num { font-family: 'Playfair Display', Georgia, serif; font-size: 36px; font-weight: 700; color: var(--teal-200); opacity: 0.5; line-height: 1; flex-shrink: 0; }
+  .daily-day-title { font-family: 'Playfair Display', Georgia, serif; font-size: 18px; font-weight: 500; font-style: italic; color: var(--text-primary); }
+  .daily-day-date { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+  .daily-coming { font-size: 12px; color: var(--text-muted); font-style: italic; }
+  .timeline-row { display: flex; gap: 14px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+  .timeline-row:last-child { border-bottom: none; }
+  .timeline-time { min-width: 100px; font-size: 11px; font-weight: 600; color: var(--teal-400); padding-top: 2px; flex-shrink: 0; }
+  .timeline-time.gold { color: var(--gold-400); }
+  .timeline-title { font-size: 13px; font-weight: 500; color: var(--text-primary); }
+  .timeline-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.5; font-weight: 300; margin-top: 2px; }
+  .split-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 6px; }
+  .split-card { background: var(--bg); border-radius: 10px; padding: 10px 12px; border: 1px solid var(--border); }
+  .split-card-label { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--teal-400); margin-bottom: 4px; }
+  .split-card ul { list-style: none; padding: 0; }
+  .split-card ul li { font-size: 12px; color: var(--text-secondary); padding-left: 12px; position: relative; line-height: 1.6; font-weight: 300; }
+  .split-card ul li::before { content: '·'; position: absolute; left: 2px; color: var(--teal-200); }
+
+  /* NIGHTLIFE */
+  .ne-category-label { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--teal-400); margin: 1.5rem 0 0.75rem; }
+  .ne-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px,1fr)); gap: 12px; margin-bottom: 0.5rem; }
+  .ne-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px; padding: 14px 16px; position: relative; overflow: hidden; transition: border-color 0.15s, transform 0.15s; display: flex; flex-direction: column; gap: 6px; }
+  .ne-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--teal-200); border-radius: 14px 0 0 14px; }
+  .ne-card:hover { border-color: rgba(45,179,168,0.45); transform: translateY(-1px); }
+  .ne-name { font-size: 14px; font-weight: 500; color: var(--text-primary); }
+  .ne-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.5; font-weight: 300; flex: 1; }
+  .ne-tag { align-self: flex-start; font-size: 10px; padding: 2px 8px; border-radius: 20px; font-weight: 500; margin-top: 4px; }
+  .tag-dinner { background: var(--coral-50); color: var(--coral-400); }
+  .tag-beach { background: var(--teal-50); color: var(--teal-400); }
+  .tag-adventure { background: var(--gold-50); color: var(--gold-600); }
+  .tag-tequila { background: var(--teal-50); color: var(--teal-600); }
+  .tag-nature { background: var(--teal-50); color: var(--teal-600); }
+
+  .footer { text-align: center; padding: 2rem; font-size: 12px; color: var(--text-muted); border-top: 1px solid var(--border); }
+  .footer strong { font-family: 'Playfair Display', Georgia, serif; font-style: italic; color: var(--teal-400); font-weight: 500; }
+
+  @media (max-width: 600px) {
+    .hero { padding: 2rem 1.5rem; } .nav-strip { padding: 0 1rem; }
+    .main { padding: 2rem 1.25rem 3rem; } .rooms-grid { grid-template-columns: 1fr 1fr; }
+    .flights-grid { grid-template-columns: 1fr; } .ne-grid { grid-template-columns: 1fr; }
+    .split-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<input type="radio" class="tab-radio" name="tabs" id="tab-main" checked>
+<input type="radio" class="tab-radio" name="tabs" id="tab-flights">
+<input type="radio" class="tab-radio" name="tabs" id="tab-daily">
+<input type="radio" class="tab-radio" name="tabs" id="tab-vibes">
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-texture"></div>
+  <div class="hero-lines"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">Puerto Vallarta · Jalisco, México</div>
+    <h1 class="hero-title">
+      <span class="line2">F.O.E</span>
+      <span class="line3">Mexico Summer 2026</span>
+    </h1>
+    <div class="hero-countdown" id="countdown">
+      <div class="cd-block"><span class="cd-num" id="cd-days">--</span><span class="cd-label">Days</span></div>
+      <span class="cd-sep">:</span>
+      <div class="cd-block"><span class="cd-num" id="cd-hours">--</span><span class="cd-label">Hours</span></div>
+      <span class="cd-sep">:</span>
+      <div class="cd-block"><span class="cd-num" id="cd-mins">--</span><span class="cd-label">Mins</span></div>
+      <span class="cd-sep">:</span>
+      <div class="cd-block"><span class="cd-num" id="cd-secs">--</span><span class="cd-label">Secs</span></div>
+    </div>
+    <div class="hero-divider"></div>
+    <p class="hero-sub">Five days at a private hillside estate in Conchas Chinas — Jalisco's spirit, the Pacific below, and a full staff to handle the rest.</p>
+    <div class="hero-badges">
+      <span class="badge">Jul 30 – Aug 3, 2026</span>
+      <span class="badge">Hacienda de las Flores</span>
+      <span class="badge">Conchas Chinas, PV</span>
+    </div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="nav-strip">
+  <label class="nav-label label-main" for="tab-main" onclick="setTimeout(()=>window.scrollTo({top:0,behavior:'smooth'}),50)">The Villa</label>
+  <label class="nav-label label-main" for="tab-main" onclick="setTimeout(()=>document.getElementById('grocery').scrollIntoView({behavior:'smooth'}),50)">Grocery List</label>
+  <label class="nav-label label-main" for="tab-main" onclick="setTimeout(()=>document.getElementById('rooms').scrollIntoView({behavior:'smooth'}),50)">Luxe Rooms</label>
+  <label class="nav-label label-flights" for="tab-flights" onclick="setTimeout(()=>document.getElementById('flights-header').scrollIntoView({behavior:'smooth'}),50)">Flights</label>
+  <label class="nav-label label-daily" for="tab-daily" onclick="setTimeout(()=>document.getElementById('daily-header').scrollIntoView({behavior:'smooth'}),50)">On the Daily</label>
+  <label class="nav-label label-vibes" for="tab-vibes" onclick="setTimeout(()=>document.getElementById('vibes-header').scrollIntoView({behavior:'smooth'}),50)">Nightlife &amp; Excursions</label>
+</nav>
+
+<!-- MAIN PAGE -->
+<div class="page page-main">
+  <div class="main">
+    <div class="villa-card">
+      <div class="villa-tag">★ 5.0 · Secured Accommodation · Iris Covet Collection</div>
+      <div class="villa-name">Hacienda de las Flores</div>
+      <div class="villa-sub">Conchas Chinas, Puerto Vallarta · ~10 min from PVR Airport · ~5 min to downtown</div>
+      <div class="villa-services-head" style="margin-top:1rem;">On-Site Staff — Daily Schedule</div>
+      <div class="villa-services-grid">
+        <div class="villa-service-item">👨‍🍳 Chef: Breakfast 7:30–9 AM · Lunch midday · Dinner 6–9 PM</div>
+        <div class="villa-service-item">🍽️ Waitstaff: 9:00 AM – 9:00 PM</div>
+        <div class="villa-service-item">🧹 Housekeeping: 8:00 AM – 6:00 PM</div>
+        <div class="villa-service-item">🍸 Mixologist: 1:00 PM – 9:00 PM</div>
+        <div class="villa-service-item">🛎️ Concierge: 8:00 AM – 8:00 PM (transport, dining, tours, spa)</div>
+        <div class="villa-service-item">🏊 Ocean-view pool · Terraces · Tropical gardens</div>
+      </div>
+      <div class="villa-note">📌 Check-in: 3:00 PM · Check-out: 11:00 AM · 2 meals daily + midday snack included. Food, beverages &amp; alcohol paid separately. Gratuity: ~$30 USD/guest/night. ~5 min to Zona Romántica · ~10 min to PVR Airport — Uber readily available. 💱 1 USD = 17.43 MXN (as of May 1, 2026)</div>
+    </div>
+
+    <div class="section-block" id="grocery">
+      <div class="section-block-header">
+        <div class="section-block-title">Grocery List</div>
+        <div class="section-block-sub">Coordinate with the concierge before arrival — they can source everything locally</div>
+      </div>
+      <div class="grocery-panel">
+        <div class="grocery-head">🍸 The Villa Bar</div>
+        <ul class="grocery-list">
+          <li><strong>Tequila &amp; Mezcal</strong> — High-quality Blanco for cocktails (like Siete Leguas) and a Reposado or Añejo for sipping. A bottle of smoky Mezcal (like 400 Conejos).</li>
+          <li><strong>Raicilla</strong> — The local spirit of Puerto Vallarta. Ask the concierge for a bottle of Hacienda El Divisadero.</li>
+          <li><strong>Mixers &amp; Fresh Fruit</strong> — Limes, grapefruit (for Palomas), agave nectar, and sparkling water (Topo Chico).</li>
+          <li><strong>Local Beer</strong> — A mix of Pacifico (local favorite) and craft options like Cervecería Los Muertos.</li>
+        </ul>
+      </div>
+      <div class="grocery-panel">
+        <div class="grocery-head">👨‍🍳 The Chef's Kitchen</div>
+        <ul class="grocery-list">
+          <li><strong>Fresh Seafood</strong> — Huachinango (Red Snapper) for a Zarandeado-style dinner and fresh shrimp for aguachile or ceviche.</li>
+          <li><strong>Breakfast Staples</strong> — High-quality Oaxacan cheese, fresh avocados, tortillas (flour and corn), and local tropical fruits (mango, papaya, pitaya).</li>
+          <li><strong>Snack Request</strong> — Guacamole &amp; Pico de Gallo ingredients ready for the mid-day pool snack.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section-block" id="rooms">
+      <div class="section-block-header">
+        <div class="section-block-title">Luxe Rooms</div>
+        <div class="section-block-sub">Hacienda de las Flores · 10 Ocean-View Suites · 1 Group per Suite</div>
+      </div>
+      <div class="rooms-grid">
+        <div class="room-card"><div class="room-num">Suite 01</div><div class="room-group">Group 1</div><div class="room-members">Rhoda Emezienna · Vitus Emezienna</div></div>
+        <div class="room-card"><div class="room-num">Suite 02</div><div class="room-group">Group 2</div><div class="room-members">Adolbert Onyima · Patience Onyima</div></div>
+        <div class="room-card"><div class="room-num">Suite 03</div><div class="room-group">Group 3</div><div class="room-members">Chi Chi Emezienna · Mekos Chudy-Onwugaje · Adannaya Chudy-Onwugaje · Olanna Chudy-Onwugaje</div></div>
+        <div class="room-card"><div class="room-num">Suite 04</div><div class="room-group">Group 4</div><div class="room-members">Mimi Onyima · Lydia Onyima · Ayamba Onyima · Adaora Onyima</div></div>
+        <div class="room-card"><div class="room-num">Suite 05</div><div class="room-group">Group 5</div><div class="room-members">CD Onyima · Nnenna Onyima · Ikenna Onyima</div></div>
+        <div class="room-card"><div class="room-num">Suite 06</div><div class="room-group">Group 6</div><div class="room-members">Queeneth Okolie · Gabrielle Okolie · Emmanuella Okolie</div></div>
+        <div class="room-card"><div class="room-num">Suite 07</div><div class="room-group">Group 7</div><div class="room-members">Amaka Onyima · Tochukwu Onyima</div></div>
+        <div class="room-card"><div class="room-num">Suite 08</div><div class="room-group">Group 8</div><div class="room-members">Nono Emezienna · Chika Emezienna · Amarachi Onyima</div></div>
+        <div class="room-card"><div class="room-num">Suite 09</div><div class="room-group">Group 9</div><div class="room-members">Kc Emezienna · Dim Dim Onyima · Obi Onyima</div></div>
+        <div class="room-card"><div class="room-num">Suite 10</div><div class="room-group">Group 10</div><div class="room-members">Ngozi Emezienna · Chinenye Zama · Nneka Onyima</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FLIGHTS PAGE -->
+<div class="page page-flights">
+  <div class="page-wrap">
+    <div class="page-header" id="flights-header">
+      <div class="page-title">Flights</div>
+      <div class="page-sub">Jul 30 Arrivals → Puerto Vallarta (PVR) · Aug 3 Departures</div>
+    </div>
+
+    <!-- ARRIVALS -->
+    <div class="airline-group">
+      <div class="airline-group-label">✈️ Arrivals — Thursday, July 30</div>
+      <div class="flights-grid">
+
+        <div class="flight-card">
+          <div class="fc-route">DFW → PVR</div>
+          <div class="fc-times"><div class="fc-leg"><span class="fc-time">8:55 AM</span><span class="fc-arr">10:34 AM</span></div><div class="fc-detail">AA 1114 · Nonstop · Earliest arrival</div></div>
+          <div class="flight-passengers"><span class="flight-passengers-label">Passengers</span><span class="flight-passenger-name">Amaka Onyima</span><span class="flight-passenger-name">Tochukwu Onyima</span></div>
+        </div>
+
+        <div class="flight-card">
+          <div class="fc-route">DCA → IAH → PVR</div>
+          <div class="fc-times"><div class="fc-leg"><span class="fc-time">6:00 AM</span><span class="fc-arr">11:10 AM</span></div><div class="fc-detail">UA 1450 + UA 1622 · via Houston</div></div>
+          <div class="flight-passengers"><span class="flight-passengers-label">Passengers</span><span class="flight-passenger-name">Nono Emezienna</span><span class="flight-passenger-name">Kc Emezienna</span></div>
+        </div>
+
+        <div class="flight-card">
+          <div class="fc-route">RDU → IAH → PVR</div>
+          <div class="fc-times"><div class="fc-leg"><span class="fc-time">—</span><span class="fc-arr">11:10 AM</span></div><div class="fc-detail">UA 1383 + UA 1622 · via Houston</div></div>
+          <div class="flight-passengers"><span class="flight-passengers-label">Passengers</span><span class="flight-passenger-name">Ngozi Emezienna</span></div>
+        </div>
+
+        <div class="flight-card">
+          <div class="fc-route">BWI → HOU → PVR</div>
+          <div class="fc-times"><div class="fc-leg"><span class="fc-time">—</span><span class="fc-arr">11:05 AM</span></div><div class="fc-detail">WN 108 · via Houston Hobby · origin flight TBC</div></div>
+          <div class="flight-passengers"><span class="flight-passengers-label">Passengers</span><span class="flight-passenger-name">Obi Onyima</span></div>
+        </div>
+
+        <div class="flight-card">
+          <div class="fc-route">DCA → ATL → PVR</div>
+          <div class="fc-times"><div class="fc-leg"><span class="fc-time">8:00 AM</span><span class="fc-arr">12:29 PM</span></div><div class="fc-detail">DL 343 + DL 1941 · via Atlanta</div></div>
+          <div class="flight-passengers"><span class="flight-passengers-label">Passengers</span><span class="flight-passenger-name">Rhoda Emezienna</span><span class="flight-passenger-name">Vitus Emezienna</span><span class="flight-passenger-name">Chi Chi Emezienna</span><span class="flight-passenger-name">Mekos Chudy-Onwugaje</span><span class="flight-passenger-name">Adannaya Chudy-Onwugaje</span><span class="flight-passenger-name">Olanna Chudy-Onwugaje</span></div>
+        </div>
+
+        <div class="flight-card">
+          <div class="fc-route">BWI → ATL → PVR</div>
+          <div class="fc-times"><div class="fc-leg"><span class="fc-time">5:40 AM</span><span class="fc-arr">12:29 PM</span></div><div class="fc-detail">DL 2950 + DL 1941 · via Atlanta</div></div>
+          <div class="flight-passengers"><span class="flight-passengers-label">Passengers</span><span class="flight-passenger-name">Queeneth Okolie</span><span class="flight-passenger-name">Gabrielle Okolie</span><span class="flight-passenger-name">Emmanuella Okolie</span></div>
+        </div>
+
+        <div class="flight-card">
+          <div class="fc-route">DCA → ATL → PVR</div>
+          <div class="fc-times"><div class="fc-leg"><span class="fc-time">—</span><span class="fc-arr">12:29 PM</span></div><div class="fc-detail">DL 1941 ATL→PVR · likely DCA origin ⚠️ confirm</div></div>
+          <div class="flight-passengers"><span class="flight-passengers-label">Passengers</span><span class="flight-passenger-name">CD Onyima</span><span class="flight-passenger-name">Nnenna Onyima</span><span class="flight-passenger-name">Ikenna Onyima</span><span class="flight-passenger-name">Chika Emezienna</span></div>
+        </div>
+
+        <div class="flight-card">
+          <div class="fc-route">IAD → PVR</div>
+          <div class="fc-times"><div class="fc-leg"><span class="fc-time">6:30 AM</span><span class="fc-arr">1:56 PM</span></div><div class="fc-detail">UA 1935 + UA 304 · Washington Dulles</div></div>
+          <div class="flight-passengers"><span class="flight-passengers-label">Passengers</span><span class="flight-passenger-name">Mimi Onyima</span><span class="flight-passenger-name">Lydia Onyima</span><span class="flight-passenger-name">Ayamba Onyima</span><span class="flight-passenger-name">Adaora Onyima</span><span class="flight-passenger-name">Adolbert Onyima</span><span class="flight-passenger-name">Patience Onyima</span></div>
+        </div>
+
+        <div class="flight-card">
+          <div class="fc-route">DCA → IAH → PVR</div>
+          <div class="fc-times"><div class="fc-leg"><span class="fc-time">8:20 AM</span><span class="fc-arr">1:56 PM</span></div><div class="fc-detail">UA 697 + UA 304 · via Houston</div></div>
+          <div class="flight-passengers"><span class="flight-passengers-label">Passengers</span><span class="flight-passenger-name">Amarachi Onyima</span></div>
+        </div>
+
+        <div class="flight-card">
+          <div class="fc-route">? → IAH → PVR</div>
+          <div class="fc-times"><div class="fc-leg"><span class="fc-time">—</span><span class="fc-arr">11:10 AM</span></div><div class="fc-detail">UA 1622 · origin TBC</div></div>
+          <div class="flight-passengers"><span class="flight-passengers-label">Passengers</span><span class="flight-passenger-name">Chinenye Zama</span><span class="flight-passenger-name">Nneka Onyima</span></div>
+        </div>
+
+        <div class="flight-card">
+          <div class="fc-route">CA / PHX → PVR</div>
+          <div class="fc-times"><div class="fc-leg"><span class="fc-time">—</span><span class="fc-arr">1:05 PM</span></div><div class="fc-detail">WN 1298 · PHX→PVR · origin TBC</div></div>
+          <div class="flight-passengers"><span class="flight-passengers-label">Passengers</span><span class="flight-passenger-name">Oluchi Onyima</span></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- DEPARTURES -->
+    <div class="airline-group">
+      <div class="airline-group-label">🛫 Departures — Monday, August 3</div>
+      <div class="flights-grid">
+
+        <div class="flight-card">
+          <div class="fc-route">PVR → DFW</div>
+          <div class="fc-times"><div class="fc-leg"><span class="fc-time">11:38 AM</span><span class="fc-arr">3:28 PM</span></div><div class="fc-detail">AA 1114 · Nonstop</div></div>
+          <div class="flight-passengers"><span class="flight-passengers-label">Passengers</span><span class="flight-passenger-name">Amaka Onyima</span><span class="flight-passenger-name">Tochukwu Onyima</span></div>
+        </div>
+
+        <div class="flight-card">
+          <div class="fc-route">PVR → IAH → DC</div>
+          <div class="fc-times"><div class="fc-leg"><span class="fc-time">12:19 PM</span><span class="fc-arr">—</span></div><div class="fc-detail">UA 2263/1627 · Nono & Kc · arrives DCA</div></div>
+          <div class="flight-passengers"><span class="flight-passengers-label">Passengers</span><span class="flight-passenger-name">Nono Emezienna</span><span class="flight-passenger-name">Kc Emezienna</span></div>
+        </div>
+
+        <div class="flight-card">
+          <div class="fc-route">PVR → IAH → RDU</div>
+          <div class="fc-times"><div class="fc-leg"><span class="fc-time">12:19 PM</span><span class="fc-arr">—</span></div><div class="fc-detail">UA 2263/2498</div></div>
+          <div class="flight-passengers"><span class="flight-passengers-label">Passengers</span><span class="flight-passenger-name">Ngozi Emezienna</span></div>
+        </div>
+
+        <div class="flight-card">
+          <div class="fc-route">PVR → IAH → IAD</div>
+          <div class="fc-times"><div class="fc-leg"><span class="fc-time">12:19 PM</span><span class="fc-arr">10:43 PM</span></div><div class="fc-detail">UA 2263/1373</div></div>
+          <div class="flight-passengers"><span class="flight-passengers-label">Passengers</span><span class="flight-passenger-name">Mimi Onyima</span><span class="flight-passenger-name">Lydia Onyima</span><span class="flight-passenger-name">Ayamba Onyima</span><span class="flight-passenger-name">Adaora Onyima</span><span class="flight-passenger-name">Adolbert Onyima</span><span class="flight-passenger-name">Patience Onyima</span></div>
+        </div>
+
+        <div class="flight-card">
+          <div class="fc-route">PVR → ATL → DC</div>
+          <div class="fc-times"><div class="fc-leg"><span class="fc-time">1:39 PM</span><span class="fc-arr">11:48 PM</span></div><div class="fc-detail">DL 1816/0537</div></div>
+          <div class="flight-passengers"><span class="flight-passengers-label">Passengers</span><span class="flight-passenger-name">Rhoda Emezienna</span><span class="flight-passenger-name">Vitus Emezienna</span><span class="flight-passenger-name">Chi Chi Emezienna</span><span class="flight-passenger-name">Mekos Chudy-Onwugaje</span><span class="flight-passenger-name">Adannaya Chudy-Onwugaje</span><span class="flight-passenger-name">Olanna Chudy-Onwugaje</span><span class="flight-passenger-name">Chika Emezienna</span><span class="flight-passenger-name">Nneka Onyima</span></div>
+        </div>
+
+        <div class="flight-card">
+          <div class="fc-route">PVR → IAH → DCA</div>
+          <div class="fc-times"><div class="fc-leg"><span class="fc-time">2:52 PM</span><span class="fc-arr">11:59 PM</span></div><div class="fc-detail">UA 1166/2224</div></div>
+          <div class="flight-passengers"><span class="flight-passengers-label">Passengers</span><span class="flight-passenger-name">Amarachi Onyima</span><span class="flight-passenger-name">CD Onyima</span><span class="flight-passenger-name">Nnenna Onyima</span><span class="flight-passenger-name">Ikenna Onyima</span></div>
+        </div>
+
+        <div class="flight-card">
+          <div class="fc-route">PVR → HOU → ?</div>
+          <div class="fc-times"><div class="fc-leg"><span class="fc-time">3:00 PM</span><span class="fc-arr">—</span></div><div class="fc-detail">Southwest · return flight TBC</div></div>
+          <div class="flight-passengers"><span class="flight-passengers-label">Passengers</span><span class="flight-passenger-name">Obi Onyima</span></div>
+        </div>
+
+        <div class="flight-card">
+          <div class="fc-route">PVR → ATL → BWI</div>
+          <div class="fc-times"><div class="fc-leg"><span class="fc-time">3:30 PM</span><span class="fc-arr">6:20 AM</span></div><div class="fc-detail">DL 1838/2079</div></div>
+          <div class="flight-passengers"><span class="flight-passengers-label">Passengers</span><span class="flight-passenger-name">Queeneth Okolie</span><span class="flight-passenger-name">Gabrielle Okolie</span><span class="flight-passenger-name">Emmanuella Okolie</span></div>
+        </div>
+
+        <div class="flight-card">
+          <div class="fc-route">PVR → ? → CA/PHX</div>
+          <div class="fc-times"><div class="fc-leg"><span class="fc-time">12:00 PM</span><span class="fc-arr">—</span></div><div class="fc-detail">WN 1298 · return details TBC</div></div>
+          <div class="flight-passengers"><span class="flight-passengers-label">Passengers</span><span class="flight-passenger-name">Oluchi Onyima</span></div>
+        </div>
+
+        <div class="flight-card">
+          <div class="fc-route">PVR → ? (Early)</div>
+          <div class="fc-times"><div class="fc-leg"><span class="fc-time">11:38 AM</span><span class="fc-arr">—</span></div><div class="fc-detail">Southwest · return details TBC</div></div>
+          <div class="flight-passengers"><span class="flight-passengers-label">Passengers</span><span class="flight-passenger-name">Chinenye Zama</span></div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ON THE DAILY PAGE -->
+<div class="page page-daily">
+  <div class="page-wrap">
+    <div class="page-header" id="daily-header">
+      <div class="page-title">On the Daily</div>
+      <div class="page-sub">Jul 30 – Aug 3, 2026 · Day-by-day schedule</div>
+    </div>
+
+    <div class="daily-days">
+
+      <!-- DAY 1 -->
+      <div class="daily-day">
+        <div class="daily-day-header"><span class="daily-day-num">01</span><div><div class="daily-day-title">Arrival + Sunset Welcome Dinner</div><div class="daily-day-date">Thursday · July 30, 2026</div></div></div>
+        <div class="timeline-row">
+          <div class="timeline-time">10:30 AM – 2:00 PM</div>
+          <div><div class="timeline-title">✈️ F.O.E Arrivals</div><div class="timeline-desc">Everyone lands at PVR across staggered flights — welcome to Puerto Vallarta!</div></div>
+        </div>
+        <div class="timeline-row">
+          <div class="timeline-time">11:00 AM – 2:00 PM</div>
+          <div><div class="timeline-title">🚐 Airport shuttles to the Villa</div><div class="timeline-desc">~10 min ride to Hacienda de las Flores · Uber also readily available · Coordinate with concierge for group transport</div></div>
+        </div>
+        <div class="timeline-row">
+          <div class="timeline-time gold">2:00 – 3:00 PM</div>
+          <div><div class="timeline-title">🏊 Pool &amp; beach time</div><div class="timeline-desc">Unwind while rooms are finalized · mixologist on deck from 1 PM · first Palomas of the trip</div></div>
+        </div>
+        <div class="timeline-row">
+          <div class="timeline-time gold">3:00 PM</div>
+          <div><div class="timeline-title">🔑 Official Check-In</div><div class="timeline-desc">Room assignments distributed · get settled in your suite</div></div>
+        </div>
+        <div class="timeline-row">
+          <div class="timeline-time gold">3:00 – 5:00 PM</div>
+          <div><div class="timeline-title">🏖️ Pool &amp; beach continue</div><div class="timeline-desc">Swim, relax, explore the villa grounds · terrace views of the Pacific</div></div>
+        </div>
+        <div class="timeline-row">
+          <div class="timeline-time gold">6:30 PM</div>
+          <div><div class="timeline-title">🍽️ Welcome family dinner</div><div class="timeline-desc">Chef's first meal · everyone together · celebrate the arrival</div></div>
+        </div>
+        <div class="timeline-row">
+          <div class="timeline-time gold">8:00 PM</div>
+          <div><div class="timeline-title">🌅 Sunset walk on the Malecón</div><div class="timeline-desc">Explore the waterfront promenade · street performers, sculptures, ocean views · ~5 min drive from villa</div></div>
+        </div>
+      </div>
+
+      <!-- DAY 2 -->
+      <div class="daily-day">
+        <div class="daily-day-header"><span class="daily-day-num">02</span><div><div class="daily-day-title">Family Photos + Beach Day</div><div class="daily-day-date">Friday · July 31, 2026</div></div></div>
+        <div class="timeline-row">
+          <div class="timeline-time gold">9:00 AM</div>
+          <div><div class="timeline-title">🍳 Breakfast</div><div class="timeline-desc">Chef's breakfast at the villa · 7:30–9 AM</div></div>
+        </div>
+        <div class="timeline-row">
+          <div class="timeline-time">11:00 AM – 1:00 PM</div>
+          <div>
+            <div class="timeline-title">📸 Professional Family Photo Session</div>
+            <div class="timeline-desc">Family-accessible shirts recommended · choose your location!</div>
+            <div class="split-grid">
+              <div class="split-card"><div class="split-card-label">⭐ Option 1 — Most Popular</div><ul><li>Los Muertos Pier</li></ul></div>
+              <div class="split-card"><div class="split-card-label">Option 2</div><ul><li>Conchas Chinas Beach</li></ul></div>
+              <div class="split-card"><div class="split-card-label">Option 3 — Small Group Only</div><ul><li>Mirador Cerro de la Cruz</li></ul></div>
+            </div>
+          </div>
+        </div>
+        <div class="timeline-row">
+          <div class="timeline-time gold">1:00 PM</div>
+          <div><div class="timeline-title">🏖️ Relaxed beach day</div><div class="timeline-desc">Swim, sunbathe, pool time · mixologist from 1 PM</div></div>
+        </div>
+        <div class="timeline-row">
+          <div class="timeline-time gold">6:30 PM</div>
+          <div>          <div class="timeline-title">🎂 July Birthdays Dinner 🎉</div><div class="timeline-desc">Special dinner celebration · party hats required!</div></div>
+        </div>
+        <div class="timeline-row">
+          <div class="timeline-time gold">8:00 PM</div>
+          <div><div class="timeline-title">🍦 Ice cream &amp; evening walk</div><div class="timeline-desc">Nightlife for those who want it · explore Zona Romántica</div></div>
+        </div>
+      </div>
+
+      <!-- DAY 3 -->
+      <div class="daily-day">
+        <div class="daily-day-header"><span class="daily-day-num">03</span><div><div class="daily-day-title">Excursion Day</div><div class="daily-day-date">Saturday · August 1, 2026</div></div></div>
+        <div class="timeline-row">
+          <div class="timeline-time gold">9:00 AM</div>
+          <div><div class="timeline-title">🍳 Breakfast</div><div class="timeline-desc">Fuel up before the day's adventures</div></div>
+        </div>
+        <div class="timeline-row">
+          <div class="timeline-time">Morning – Afternoon</div>
+          <div>
+            <div class="timeline-title">🗺️ Split Excursions</div>
+            <div class="split-grid">
+              <div class="split-card">
+                <div class="split-card-label">🧗 Group A — Adventure Adults</div>
+                <ul>
+                  <li>Las Caletas Day Trip</li>
+                  <li>Boat ride + snorkeling</li>
+                  <li>Kayaking + hidden beaches</li>
+                </ul>
+              </div>
+              <div class="split-card">
+                <div class="split-card-label">👨‍👩‍👧 Group B — Families &amp; Grandparents</div>
+                <ul>
+                  <li>Rhythms of the Night area (relaxed)</li>
+                  <li>OR Marietas Islands boat tour</li>
+                  <li>OR relaxed resort day</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="timeline-row">
+          <div class="timeline-time gold">6:30 PM</div>
+          <div><div class="timeline-title">🍽️ Dinner</div><div class="timeline-desc">Everyone reunites at the villa</div></div>
+        </div>
+        <div class="timeline-row">
+          <div class="timeline-time gold">8:00 PM</div>
+          <div>
+            <div class="timeline-title">🎲 Family Game Night</div>
+            <div class="timeline-desc">Ideas: Family Feud · Heads Up · Family Trivia · Connect</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DAY 4 -->
+      <div class="daily-day">
+        <div class="daily-day-header"><span class="daily-day-num">04</span><div><div class="daily-day-title">Explore Puerto Vallarta</div><div class="daily-day-date">Sunday · August 2, 2026</div></div></div>
+        <div class="timeline-row">
+          <div class="timeline-time gold">9:00 AM</div>
+          <div><div class="timeline-title">🍳 Breakfast</div><div class="timeline-desc">Chef's breakfast at the villa</div></div>
+        </div>
+        <div class="timeline-row">
+          <div class="timeline-time">10:00 AM – 1:00 PM</div>
+          <div><div class="timeline-title">🏙️ Downtown exploration</div><div class="timeline-desc">Wander the Malecón, Old Town, and Zona Romántica · lunch out in the city</div></div>
+        </div>
+        <div class="timeline-row">
+          <div class="timeline-time gold">2:00 – 5:00 PM</div>
+          <div><div class="timeline-title">🏊 Pool Party + Massages</div><div class="timeline-desc">Back at the villa · mixologist on deck · book massages through the concierge</div></div>
+        </div>
+        <div class="timeline-row">
+          <div class="timeline-time gold">6:30 PM</div>
+          <div><div class="timeline-title">🤍 All-White Dinner</div><div class="timeline-desc">Everyone dressed in white · elegant villa dinner · candles &amp; ocean views</div></div>
+        </div>
+        <div class="timeline-row">
+          <div class="timeline-time gold">7:30 PM</div>
+          <div><div class="timeline-title">🏆 Family Award Show</div><div class="timeline-desc">Custom awards for family members · laughs guaranteed</div></div>
+        </div>
+      </div>
+
+      <!-- DAY 5 -->
+      <div class="daily-day">
+        <div class="daily-day-header"><span class="daily-day-num">05</span><div><div class="daily-day-title">Departure Day</div><div class="daily-day-date">Monday · August 3, 2026</div></div></div>
+        <div class="timeline-row">
+          <div class="timeline-time gold">Morning</div>
+          <div><div class="timeline-title">🌅 Final morning rituals</div><div class="timeline-desc">Last beach walk · breakfast together · final family photos</div></div>
+        </div>
+        <div class="timeline-row">
+          <div class="timeline-time gold">11:00 AM</div>
+          <div><div class="timeline-title">🧳 Check-Out</div><div class="timeline-desc">Rooms must be cleared by 11:00 AM</div></div>
+        </div>
+        <div class="timeline-row">
+          <div class="timeline-time gold">Before airport</div>
+          <div>
+            <div class="timeline-title">🛍️ If flights are later…</div>
+            <div class="timeline-desc">Marina Vallarta boardwalk · souvenir shopping · coffee stop</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- OPTIONAL ADD-ONS -->
+    <div class="page-header" style="margin-top:1rem;">
+      <div class="page-title">Optional Add-Ons</div>
+      <div class="page-sub">Extra activities to sprinkle into any day</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin-bottom:2rem;">
+      <div class="split-card">
+        <div class="split-card-label">👶 For Kids</div>
+        <ul>
+          <li>Dolphin Discovery</li>
+          <li>Pirate Ship Adventure</li>
+          <li>Splash Water Park</li>
+        </ul>
+      </div>
+      <div class="split-card">
+        <div class="split-card-label">🍹 For Adults</div>
+        <ul>
+          <li>ATV tour</li>
+          <li>Tequila tasting</li>
+          <li>Yelapa boat trip</li>
+          <li>Ziplining</li>
+        </ul>
+      </div>
+      <div class="split-card">
+        <div class="split-card-label">🌅 For Everyone</div>
+        <ul>
+          <li>Sunset catamaran cruise ⭐ Highly recommended</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- NIGHTLIFE & EXCURSIONS PAGE -->
+<div class="page page-vibes">
+  <div class="page-wrap">
+    <div class="page-header" id="vibes-header">
+      <div class="page-title">Nightlife &amp; Excursions</div>
+      <div class="page-sub">Zona Romántica · ~5 min drive from the Villa</div>
+    </div>
+
+    <div class="ne-category-label">🍽️ Upscale &amp; Romantic — Reservations Recommended</div>
+    <div class="ne-grid">
+      <div class="ne-card"><div class="ne-name">The Iguana Restaurant &amp; Tequila Bar</div><div class="ne-desc">Open-air contemporary Mexican dining at Casa Kimberly overlooking the city.</div><span class="ne-tag tag-dinner">upscale</span></div>
+      <div class="ne-card"><div class="ne-name">Hacienda San Angel Gourmet</div><div class="ne-desc">Stunning rooftop setting for Mexican and international cuisine with live mariachi music.</div><span class="ne-tag tag-dinner">upscale</span></div>
+      <div class="ne-card"><div class="ne-name">La Cappella</div><div class="ne-desc">Famous for its dramatic views of the Our Lady of Guadalupe church and the bay.</div><span class="ne-tag tag-dinner">upscale</span></div>
+    </div>
+    <div class="ne-category-label">🐟 Seafood &amp; Beachfront</div>
+    <div class="ne-grid">
+      <div class="ne-card"><div class="ne-name">La Palapa</div><div class="ne-desc">A PV classic on Los Muertos Beach offering fine dining on the sand.</div><span class="ne-tag tag-beach">beachfront</span></div>
+      <div class="ne-card"><div class="ne-name">Mar Y Vino</div><div class="ne-desc">Unique "underwater" dining concept where you eat with your feet in a mirror of water.</div><span class="ne-tag tag-beach">seafood</span></div>
+      <div class="ne-card"><div class="ne-name">El Dorado</div><div class="ne-desc">Upscale modern Mexican seafood with a highly-rated beach club for daytime relaxation.</div><span class="ne-tag tag-beach">beach club</span></div>
+    </div>
+    <div class="ne-category-label">🌮 Local &amp; Casual Favorites</div>
+    <div class="ne-grid">
+      <div class="ne-card"><div class="ne-name">Pancho's Takos</div><div class="ne-desc">Renowned for their charcoal-fired al pastor tacos. Expect a line — it moves quickly.</div><span class="ne-tag tag-adventure">casual</span></div>
+      <div class="ne-card"><div class="ne-name">Joe Jack's Fish Shack</div><div class="ne-desc">Vibrant spot in the Zona Romántica famous for fish specials and a rooftop balcony.</div><span class="ne-tag tag-adventure">casual</span></div>
+    </div>
+    <div class="ne-category-label">🍹 Nightlife &amp; Bars</div>
+    <div class="ne-grid">
+      <div class="ne-card"><div class="ne-name">The Top Sky Bar</div><div class="ne-desc">Essential stop for sunset cocktails and lively energy with 360-degree views.</div><span class="ne-tag tag-tequila">bar</span></div>
+      <div class="ne-card"><div class="ne-name">Bar La Playa</div><div class="ne-desc">Intimate craft cocktail bar known for high-quality, reasonably priced drinks.</div><span class="ne-tag tag-tequila">bar</span></div>
+      <div class="ne-card"><div class="ne-name">Twisted Palms Rooftop Lounge</div><div class="ne-desc">Relaxed upstairs spot perfect for martinis and escaping the busy streets below.</div><span class="ne-tag tag-tequila">rooftop bar</span></div>
+    </div>
+    <div class="ne-category-label">🧭 Excursions &amp; Adventure</div>
+    <div class="ne-grid">
+      <div class="ne-card"><div class="ne-name">Rhythms of the Night</div><div class="ne-desc">Top-rated evening cruise to Las Caletas — candlelit buffet dinner and a professional contemporary dance show.</div><span class="ne-tag tag-nature">evening cruise</span></div>
+      <div class="ne-card"><div class="ne-name">Marietas Islands "Hidden Beach"</div><div class="ne-desc">Boat tour to the UNESCO-protected islands for snorkeling, with access to the famous Playa del Amor.</div><span class="ne-tag tag-beach">boat tour</span></div>
+      <div class="ne-card"><div class="ne-name">Los Arcos Snorkeling &amp; Bioluminescence</div><div class="ne-desc">Daytime snorkeling through caves and arches; nighttime bioluminescent swimming after sunset.</div><span class="ne-tag tag-beach">snorkeling</span></div>
+      <div class="ne-card"><div class="ne-name">Jorullo Bridge Adventure</div><div class="ne-desc">Cross the world's longest suspension bridge on an ATV or RZR for a high-adrenaline experience.</div><span class="ne-tag tag-adventure">adventure</span></div>
+      <div class="ne-card"><div class="ne-name">Yelapa &amp; Majahuitas</div><div class="ne-desc">Boat to remote villages accessible only by sea — hike to waterfalls or enjoy the secluded Majahuitas Beach Club.</div><span class="ne-tag tag-nature">day trip</span></div>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <strong>F.O.E Mexico Summer 2026</strong> &nbsp;·&nbsp; Hacienda de las Flores · Conchas Chinas, PV · Jul 30 – Aug 3, 2026
+</footer>
+
+<script defer>
+  const target = new Date(Date.UTC(2026, 6, 30, 17, 0, 0));
+  function updateCountdown() {
+    const diff = target - new Date();
+    if (diff <= 0) {
+      document.getElementById('countdown').innerHTML = '<span style="font-family:Playfair Display,serif;font-size:clamp(28px,4vw,48px);font-style:italic;color:#FAEAB3;">We\'re here! 🌊</span>';
+      return;
+    }
+    document.getElementById('cd-days').textContent  = String(Math.floor(diff / 86400000)).padStart(2,'0');
+    document.getElementById('cd-hours').textContent = String(Math.floor((diff % 86400000) / 3600000)).padStart(2,'0');
+    document.getElementById('cd-mins').textContent  = String(Math.floor((diff % 3600000) / 60000)).padStart(2,'0');
+    document.getElementById('cd-secs').textContent  = String(Math.floor((diff % 60000) / 1000)).padStart(2,'0');
+  }
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+</script>
+</body>
+</html>
