@@ -53,6 +53,13 @@
   .hero-sub { font-size: 14px; color: rgba(255,255,255,0.55); font-weight: 300; margin-bottom: 1.5rem; max-width: 460px; line-height: 1.7; }
   .hero-badges { display: flex; gap: 8px; flex-wrap: wrap; }
   .badge { font-size: 10px; font-weight: 600; padding: 5px 14px; border-radius: 20px; border: 1px solid rgba(240,192,64,0.35); background: rgba(240,192,64,0.08); color: var(--gold-100); letter-spacing: 0.08em; text-transform: uppercase; }
+  .hero-clock { display: flex; align-items: center; gap: 8px; margin-top: 1.25rem; font-size: 12px; color: rgba(255,255,255,0.55); flex-wrap: wrap; row-gap: 10px; }
+  .hero-clock .clock-dot { width: 6px; height: 6px; border-radius: 50%; background: #4ADE80; box-shadow: 0 0 6px #4ADE80; flex-shrink: 0; }
+  .hero-clock .clock-time { font-family: 'Playfair Display', Georgia, serif; font-style: italic; color: var(--gold-100); font-size: 15px; }
+  .clock-group { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .clock-item { display: flex; align-items: center; gap: 6px; }
+  .clock-item .clock-city { text-transform: uppercase; letter-spacing: 0.06em; font-size: 10px; }
+  .clock-divider { width: 1px; height: 14px; background: rgba(255,255,255,0.15); }
 
   /* MAIN */
   .main { max-width: 860px; margin: 0 auto; padding: 3rem 2rem 4rem; }
@@ -190,6 +197,15 @@
       <span class="badge">Jul 30 – Aug 3, 2026</span>
       <span class="badge">Hacienda de las Flores</span>
       <span class="badge">Conchas Chinas, PV</span>
+    </div>
+    <div class="hero-clock">
+      <div class="clock-item"><span class="clock-dot"></span><span class="clock-city">Puerto Vallarta</span><span class="clock-time" id="clock-pvr">--:--:--</span></div>
+      <div class="clock-divider"></div>
+      <div class="clock-item"><span class="clock-city">Portland</span><span class="clock-time" id="clock-pdx">--:--:--</span></div>
+      <div class="clock-divider"></div>
+      <div class="clock-item"><span class="clock-city">Dallas</span><span class="clock-time" id="clock-dfw">--:--:--</span></div>
+      <div class="clock-divider"></div>
+      <div class="clock-item"><span class="clock-city">DC / Baltimore</span><span class="clock-time" id="clock-dc">--:--:--</span></div>
     </div>
   </div>
 </div>
@@ -683,6 +699,24 @@
   }
   updateCountdown();
   setInterval(updateCountdown, 1000);
+
+  function updateClocks() {
+    const now = new Date();
+    const zones = {
+      'clock-pvr': 'America/Mexico_City',
+      'clock-pdx': 'America/Los_Angeles',
+      'clock-dfw': 'America/Chicago',
+      'clock-dc': 'America/New_York'
+    };
+    for (const [id, tz] of Object.entries(zones)) {
+      const formatted = new Intl.DateTimeFormat('en-US', {
+        timeZone: tz, hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true
+      }).format(now);
+      document.getElementById(id).textContent = formatted;
+    }
+  }
+  updateClocks();
+  setInterval(updateClocks, 1000);
 </script>
 </body>
 </html>
