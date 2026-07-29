@@ -76,13 +76,12 @@
   .section-block-header { margin-bottom: 1.5rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border); }
   .section-block-title { font-family: 'Playfair Display', Georgia, serif; font-size: 26px; font-weight: 700; font-style: italic; color: var(--text-primary); }
   .section-block-sub { font-size: 12px; color: var(--text-muted); margin-top: 3px; }
-  .rooms-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px,1fr)); gap: 12px; }
-  .room-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px; padding: 14px 16px; transition: border-color 0.15s, transform 0.15s; position: relative; overflow: hidden; }
-  .room-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--teal-200); border-radius: 14px 0 0 14px; }
+  .rooms-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px,1fr)); gap: 8px; }
+  .room-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; transition: border-color 0.15s, transform 0.15s; position: relative; overflow: hidden; display: flex; align-items: center; gap: 10px; }
+  .room-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--teal-200); border-radius: 10px 0 0 10px; }
   .room-card:hover { border-color: rgba(45,179,168,0.45); transform: translateY(-1px); }
-  .room-num { font-size: 10px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--teal-400); margin-bottom: 3px; }
-  .room-group { font-size: 14px; font-weight: 500; color: var(--text-primary); margin-bottom: 5px; }
-  .room-members { font-size: 12px; color: var(--text-secondary); line-height: 1.6; font-weight: 300; }
+  .room-num { font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--teal-400); white-space: nowrap; flex-shrink: 0; }
+  .room-members { font-size: 12px; color: var(--text-secondary); line-height: 1.4; font-weight: 300; }
   .grocery-panel { background: var(--card-bg); border: 1px solid var(--border); border-left: 3px solid var(--teal-200); border-radius: 0 14px 14px 0; padding: 1.25rem 1.5rem; margin-bottom: 1rem; }
   .grocery-head { font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 0.75rem; }
   .grocery-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
@@ -269,16 +268,16 @@
         <div class="section-block-sub">Hacienda de las Flores · 10 Ocean-View Suites · 1 Group per Suite</div>
       </div>
       <div class="rooms-grid">
-        <div class="room-card"><div class="room-num">Suite 01</div><div class="room-group">Group 1</div><div class="room-members">Rhoda Emezienna · Vitus Emezienna</div></div>
-        <div class="room-card"><div class="room-num">Suite 02</div><div class="room-group">Group 2</div><div class="room-members">Adolbert Onyima · Patience Onyima</div></div>
-        <div class="room-card"><div class="room-num">Suite 03</div><div class="room-group">Group 3</div><div class="room-members">Chi Chi Emezienna · Mekos Chudy-Onwugaje · Adannaya Chudy-Onwugaje · Olanna Chudy-Onwugaje</div></div>
-        <div class="room-card"><div class="room-num">Suite 04</div><div class="room-group">Group 4</div><div class="room-members">Mimi Onyima · Lydia Onyima · Ayamba Onyima · Adaora Onyima</div></div>
-        <div class="room-card"><div class="room-num">Suite 05</div><div class="room-group">Group 5</div><div class="room-members">CD Onyima · Nnenna Onyima · Ikenna Onyima</div></div>
-        <div class="room-card"><div class="room-num">Suite 06</div><div class="room-group">Group 6</div><div class="room-members">Queeneth Okolie · Gabrielle Okolie · Emmanuella Okolie</div></div>
-        <div class="room-card"><div class="room-num">Suite 07</div><div class="room-group">Group 7</div><div class="room-members">Amaka Onyima · Tochukwu Onyima</div></div>
-        <div class="room-card"><div class="room-num">Suite 08</div><div class="room-group">Group 8</div><div class="room-members">Nono Emezienna · Chika Emezienna · Amarachi Onyima · Oluchi Onyima</div></div>
-        <div class="room-card"><div class="room-num">Suite 09</div><div class="room-group">Group 9</div><div class="room-members">Kc Emezienna · Obi Onyima</div></div>
-        <div class="room-card"><div class="room-num">Suite 10</div><div class="room-group">Group 10</div><div class="room-members">Ngozi Emezienna · Chinenye Zama · Nneka Onyima</div></div>
+        <div class="room-card"><div class="room-num">Suite 01</div><div class="room-members">Vitus · Rhoda</div></div>
+        <div class="room-card"><div class="room-num">Suite 02</div><div class="room-members">Adolbert · Patience</div></div>
+        <div class="room-card"><div class="room-num">Suite 03</div><div class="room-members">Mekos · Chi Chi · Adannaya · Olanna</div></div>
+        <div class="room-card"><div class="room-num">Suite 04</div><div class="room-members">Mimi · Lydia · Ayamba · Adaora</div></div>
+        <div class="room-card"><div class="room-num">Suite 05</div><div class="room-members">CD · Nnenna · Ikenna</div></div>
+        <div class="room-card"><div class="room-num">Suite 06</div><div class="room-members">Queeneth · Gabrielle · Emmanuella</div></div>
+        <div class="room-card"><div class="room-num">Suite 07</div><div class="room-members">Amaka · Tochukwu</div></div>
+        <div class="room-card"><div class="room-num">Suite 08</div><div class="room-members">Nono · Chika · Amarachi · Oluchi</div></div>
+        <div class="room-card"><div class="room-num">Suite 09</div><div class="room-members">KC · Obi</div></div>
+        <div class="room-card"><div class="room-num">Suite 10</div><div class="room-members">Ngozi · Chinenye · Nneka</div></div>
       </div>
     </div>
   </div>
